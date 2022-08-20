@@ -1,0 +1,85 @@
+C51 COMPILER V9.01   MAIN                                                                  06/05/2019 22:38:09 PAGE 1   
+
+
+C51 COMPILER V9.01, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: E:\aastudy\keil\install\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "reg52.h"                       //此文件中定义了单片机的一些特殊功能寄存器
+   2          #include "string.h"
+   3          #include"temp.h"        
+   4          #include"Usart.h"
+   5           #include"1602.h"
+   6          
+   7          unsigned int bai,shi,ge,fen,li;
+   8          void datapros(int temp)          
+   9          {
+  10   1              float tp;  
+  11   1              if(temp< 0)     
+  12   1              {
+  13   2                      temp=temp-1;
+  14   2                      temp=~temp;
+  15   2                      tp=temp;
+  16   2                      temp=tp*0.0625*100+0.5; 
+  17   2              }
+  18   1              else
+  19   1              {                       
+  20   2                      tp=temp;
+  21   2                      temp=tp*0.0625*100+0.5; 
+  22   2              }
+  23   1              bai=temp / 10000;
+  24   1          shi=temp % 10000 / 1000;
+  25   1              ge=temp % 1000 / 100;
+  26   1              fen=temp % 100 / 10;
+  27   1              li=temp % 10;
+  28   1               if((li>=0&&li<=9)&&(fen>=0&&fen<=9)&&(ge>=0&&ge<=9)&(shi>=1&&shi<=3)&(bai==0))
+  29   1               {
+  30   2              ttldat[0]=bai; ttldat[1]=shi;ttldat[2]=ge;ttldat[3]=fen;ttldat[4]=li;
+  31   2              }
+  32   1      }
+  33          
+  34           void xianshi()
+  35          {
+  36   1              lcdcom(0xc5);
+  37   1              lcddat(ttldat[0]+0x30);
+  38   1              lcddat( ttldat[1]+0x30);
+  39   1              lcddat(ttldat[2]+0x30);
+  40   1              lcddat('.');
+  41   1              lcddat(ttldat[3]+0x30);
+  42   1              lcddat(ttldat[4]+0x30);
+  43   1              lcddat('C');
+  44   1              
+  45   1      }
+  46          
+  47          void main()
+  48          {
+  49   1              lcdinit("temperature:");
+  50   1          UsartInit();
+  51   1      
+  52   1              while(1)
+  53   1              {
+  54   2              datapros(Ds18b20ReadTemp()); 
+  55   2              xianshi();
+C51 COMPILER V9.01   MAIN                                                                  06/05/2019 22:38:09 PAGE 2   
+
+  56   2              SendData();
+  57   2              delayms(100);
+  58   2              }               
+  59   1      }
+  60                  
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    770    ----
+   CONSTANT SIZE    =     19    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     15      20
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
